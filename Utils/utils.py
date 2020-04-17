@@ -35,7 +35,7 @@ class Utils:
 
     def getAllItemsOfTable(self, xpath):
         elements_list = []
-        sleep(3)  # Wait 1 second
+        sleep(1)  # Wait 1 second
         table = WebDriverWait(self.driver, 10).until(
             EC.presence_of_all_elements_located((By.XPATH, xpath))
         )

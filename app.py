@@ -1,13 +1,17 @@
 
-from Methods.Login import Login
-from Methods.Alerts import Alerts
+try:
+    from Methods.Login import Login
+    from Methods.Alerts import Alerts
 
-URL = 'https://newrelic.com/'
-user = ''
-password = ''
+    URL = 'https://newrelic.com/'
+    user = ''
+    password = ''
 
-login = Login(URL, user, password)
-login.startLogin()
+    login = Login(URL, user, password)
+    login.startLogin()
 
-alerts = Alerts()
-alerts.viewAllIncidents()
+    alerts = Alerts()
+    alerts.viewAllIncidents()
+finally:
+    login.logOut()
+

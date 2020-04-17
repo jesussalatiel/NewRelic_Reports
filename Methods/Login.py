@@ -23,9 +23,7 @@ class Login:
         self.util.clickElement('//input[@id="login_submit"]')
     
     def logOut(self):
-        self.util.clickElement('//*[@id="account_nav"]')
-        self.util.clickElement('//a[@ng-click="logout()"]')
-        self.util.setLog('Class: {0}, Message: Sucessful Logout'.format(self.__class__.__name__))
+        self.util.driver.quit()
 
     def verifyTitleandSaveLog(self, title, message):
         if self.util.getTitle() == title:

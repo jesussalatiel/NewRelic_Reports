@@ -2,6 +2,8 @@ from Utils.utils import Utils
 import re
 import datetime
 from time import  sleep
+import gc
+from Utils.excel import Excel
 
 class Alerts:
     
@@ -39,13 +41,13 @@ class Alerts:
             for position, validate in enumerate(log):
                 if validate == '-' or validate == '~' or validate == '':
                     log[position] = self.util.whatMonth(datetime.datetime.today().month)
-                    #print('Es un error de tipo: {0}, tiene un caracter no permitido: "{1}", cuenta con el ID: {2}'.format(self.util.typeErrors(position), validate, log[0]))
-
+                    
             correct_errors_list.append(log)
+
+        gc.collect()
         return correct_errors_list, False      
 
     def stardardData(self, text):
-        from statistics import mode
         list = []
         new_list = []
         incidents_data = self.existsErrorsIncidents(text)
@@ -71,7 +73,8 @@ class Alerts:
             for i, log in enumerate(incidents_data[0]): # Build the new structure
                 log[3] = list[i]
                 new_list.append(log)
-            
+
+        gc.collect()    
         return new_list
         
 
@@ -79,54 +82,72 @@ class Alerts:
         list = []
         list_tmp = []
         import re 
-
-        for register in self.stardardData(list_elements):
-            time = re.split("[A-z]+", register[-1])
-            if len(time)==2: #Evaluate if is minute or hours
-                if not (int(time[0])<=2) == True: #Evaluate if minute is major to 2
-                    list.append(register)
-            else:
-                if not (int(time[0])<=0) == True: #Evaluate if hour is major to 0
-                    list.append(register)
-                    
-        for item in list:
-            if (item[1].split(' ')[3]+')') == '(Critical)' and item[3].split(' ')[0] == month:
-                item.append('Apdex_'+item[1].split(' ')[0])
-                list_tmp.append(item)
-            else:
-                if item[1].split(' ')[0] == 'Ping' and (item[3].split(' ')[0]) == month:
-                    item.append('Availability_'+item[1].split(' ')[3])
+        try:
+            for register in self.stardardData(list_elements):
+                time = re.split("[A-z]+", register[-1])
+                if len(time)==2: #Evaluate if is minute or hours
+                    if not (int(time[0])<=2) == True: #Evaluate if minute is major to 2
+                        list.append(register)
+                else:
+                    if not (int(time[0])<=0) == True: #Evaluate if hour is major to 0
+                        list.append(register)
+                        
+            for item in list: #Evaluate if is Critical or Availability and save in list_tmp 
+                if (item[1].split(' ')[3]+')') == '(Critical)' and item[3].split(' ')[0] == month:
+                    item.append('Apdex_'+item[1].split(' ')[0])
                     list_tmp.append(item)
-        
+                else:
+                    if item[1].split(' ')[0] == 'Ping' and (item[3].split(' ')[0]) == month:
+                        item.append('Availability_'+item[1].split(' ')[3])
+                        list_tmp.append(item)
 
-        for item in list_tmp:
-            item.pop(1)
-            item.pop(1)
-            item.pop(2)
+            for item in list_tmp: #Clean data 
+                item.pop(1)
+                item.pop(1)
+                item.pop(2)
+            
+            for value in list_tmp: #Build the new list
+                time = value[1].split(',')
+                duration = value[-2]
+                type_incident = value[-1]
+                value[1] = time[0]
+                value[2] = time[1]
+                value[3] = duration
+                value.append(type_incident)
+            
+            return list_tmp
 
-        return list_tmp
-
+        except ValueError:
+            print('Something went wrong')
 
            
     def viewAllIncidents(self):
+        new_list = []
         self.clickAlerts()
         self.clickAllIncidents()
         self.checkTitle('Incidents - Alerts by New Relic', 'View All Incidents')
 
-        
-   
-
         filters = ['IB PROD', 'BM PROD', 'CTF PROD']
-        
+        list = []
+        excel = Excel()
+
         for filter in filters:
-            self.searchIncidents(filter)
-            for times in range(4):                
-                print(self.filterBy('Apr', self.getAllIncidentsTable()))
-                sleep(1)
+            self.searchIncidents(filter)      
+            for times in range(5):                
+                results = (self.filterBy('Apr', self.getAllIncidentsTable()))
+                if not (len(results) == 0) == True:
+                    list.append(results)
+              
                 self.nextPage()
-
                 self.cleanSearchIncident()
-
+        for elements in list:
+            for element in elements:
+                new_list.append(element)
+        
+        if excel.createIncidentsReport(new_list) == True:                       
+            self.util.setLog("Create Report, Result: Report created sucessfully")     
+        else:
+           self.util.setLog('Something went wrong: {0}, step: {1}'.format(self.__class__.__name__, 'Create Report'))  
                 
 
 
