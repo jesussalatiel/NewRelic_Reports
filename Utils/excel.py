@@ -20,53 +20,66 @@ class Excel:
             return False
 
     def createIncidentsReport(self, elements_list): 
-        sheet = self.workbook.active
-        sheet.append(['Monitor','Dia','Hora de Inicio','Duracion', 'Tipo de Alerta'])
-        sheet.auto_filter.ref = "A1:E100"
+        try:
+            sheet = self.workbook.active
+            sheet.append(['Monitor','Dia','Hora de Inicio','Duracion', 'Tipo de Alerta'])
+            for row in elements_list: # Show the list 
+                sheet.append(row) #Add the list to excel
             
-        for row in elements_list:
-            sheet.append(row)
+            lenght = int(len(elements_list) + 2)
+            #Create new Sheet 
+            final = self.workbook.create_sheet('Presentation')
+            final.append(['Monitor','Dia','Hora de Inicio','Duracion', 'Tipo de Alerta'])
 
-        range = len(elements_list)+1
+            for value in range(2, lenght):
+                final['A{0}'.format(value)] = '=Sheet!A{0}'.format(value)
+                final['B{0}'.format(value)] = '=TEXT(Sheet!{0}, "dddddddd, mmm dd, yyyy")'.format('B{0}'.format(value))
+                final['C{0}'.format(value)] = '=UPPER(Sheet!C{0})'.format(value)
+                final['D{0}'.format(value)] = '=UPPER(Sheet!D{0})'.format(value)
+                final['E{0}'.format(value)] = '=Sheet!E{0}'.format(value)
+           
 
-        sheet.merge_cells('I3:J3')
-        sheet.cell(row = 3, column = 9).value = 'IB'
-        sheet["I4"] = 'Tipo de Alerta'
-        sheet["J4"] = 'Incidencias'
-        sheet["I5"] = 'Otras'
-        sheet["J5"] = 0
-        sheet["I6"] = 'Error rate > 5.0%'
-        sheet["J6"] = 0
-        sheet["I7"] = 'Apdex Score < 0.7'
-        sheet["J7"] = '=COUNTIF(E2:E{}, "Apdex_IB")'.format(range)
-        sheet["J8"] = '=COUNTIF(E2:E{}, "Availability_IB")'.format(range)
-        sheet["I8"] = 'Ping Alerts'
-        sheet.merge_cells('K3:L3')
-        sheet.cell(row = 3, column = 11).value = 'CTF'
-        sheet["K4"] = 'Tipo de Alerta'
-        sheet["L4"] = 'Incidencias'
-        sheet["K5"] = 'Otras'
-        sheet["L5"] = 0
-        sheet["K6"] = 'Error rate > 5.0%'
-        sheet["L6"] = 0
-        sheet["K7"] = 'Apdex Score < 0.7'
-        sheet["L8"] = '=COUNTIF(E2:E{}, "Apdex_CTF")'.format(range)
-        sheet["L7"] = '=COUNTIF(E2:E{}, "Availability_CTF")'.format(range)
-        sheet["K8"] = 'Ping Alerts'
-        sheet.merge_cells('M3:N3')
-        sheet.cell(row = 3, column = 13).value = 'BM'
-        sheet["M4"] = 'Tipo de Alerta'
-        sheet["N4"] = 'Incidencias'
-        sheet["M5"] = 'Otras'
-        sheet["N5"] = 0
-        sheet["M6"] = 'Error rate > 5.0%'
-        sheet["N6"] = 0
-        sheet["M7"] = 'Apdex Score < 0.7'
-        sheet["N7"] = '=COUNTIF(E2:E{}, "Apdex_BM")'.format(range)
-        sheet["N8"] = '=COUNTIF(E2:E{}, "Availability_BM")'.format(range)
-        sheet["M8"] = 'Ping Alerts'
+            final.merge_cells('I3:J3')
+            final.cell(row = 3, column = 9).value = 'IB'
+            final["I4"] = 'Tipo de Alerta'
+            final["J4"] = 'Incidencias'
+            final["I5"] = 'Otras'
+            final["J5"] = 0
+            final["I6"] = 'Error rate > 5.0%'
+            final["J6"] = 0
+            final["I7"] = 'Apdex Score < 0.7'
+            final["J7"] = '=COUNTIF(E2:E{}, "Apdex_IB")'.format(lenght)
+            final["J8"] = '=COUNTIF(E2:E{}, "Availability_IB")'.format(lenght)
+            final["I8"] = 'Ping Alerts'
+            final.merge_cells('K3:L3')
+            final.cell(row = 3, column = 11).value = 'CTF'
+            final["K4"] = 'Tipo de Alerta'
+            final["L4"] = 'Incidencias'
+            final["K5"] = 'Otras'
+            final["L5"] = 0
+            final["K6"] = 'Error rate > 5.0%'
+            final["L6"] = 0
+            final["K7"] = 'Apdex Score < 0.7'
+            final["L7"] = '=COUNTIF(E2:E{}, "Apdex_CTF")'.format(lenght)
+            final["L8"] = '=COUNTIF(E2:E{}, "Availability_CTF")'.format(lenght)
+            final["K8"] = 'Ping Alerts'
+            final.merge_cells('M3:N3')
+            final.cell(row = 3, column = 13).value = 'BM'
+            final["M4"] = 'Tipo de Alerta'
+            final["N4"] = 'Incidencias'
+            final["M5"] = 'Otras'
+            final["N5"] = 0
+            final["M6"] = 'Error rate > 5.0%'
+            final["N6"] = 0
+            final["M7"] = 'Apdex Score < 0.7'
+            final["N7"] = '=COUNTIF(E2:E{}, "Apdex_BM")'.format(lenght)
+            final["N8"] = '=COUNTIF(E2:E{}, "Availability_BM")'.format(lenght)
+            final["M8"] = 'Ping Alerts'
+            
 
-        
-        if self.save() == True:   
-            return True
-        return False
+        except:
+            return False
+        finally:
+            if self.save() == True:   
+                return True
+            

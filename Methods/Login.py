@@ -26,11 +26,7 @@ class Login:
         self.util.driver.quit()
 
     def verifyTitleandSaveLog(self, title, message):
-        if self.util.getTitle() == title:
-            self.util.setLog('Class: {0}, Message: {1}'.format(self.__class__.__name__, message))
-            return True
-        self.util.setLog('Something went wrong: {0}'.format(self.__class__.__name__)) 
-        return False
+        self.util.setLog('Class: {0}, Message: {1}'.format(self.__class__.__name__, message))
 
     def startLogin(self):
         self.clickLogIn()

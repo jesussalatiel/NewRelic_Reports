@@ -1,4 +1,3 @@
-
 try:
     from Methods.Login import Login
     from Methods.Alerts import Alerts
@@ -12,6 +11,9 @@ try:
 
     alerts = Alerts()
     alerts.viewAllIncidents()
+except :
+    print("Internet isn't working!")
 finally:
     login.logOut()
+    
 

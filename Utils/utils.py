@@ -13,7 +13,7 @@ class Utils:
     def setupBrowser(self, URL):
         self.driver.get(URL)
         self.driver.delete_all_cookies()
-        # self.driver.maximize_window()
+        #self.driver.maximize_window()
 
     def clickElement(self, xpath):
         element = self.waitForElement(xpath)
