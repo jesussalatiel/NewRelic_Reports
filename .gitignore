@@ -1,6 +1,6 @@
 Reports
 credentials.py
 chromedriver.exe
-Utils/__pycache__/
-__pycache__/
-.gitignore
+/Utils/__pycache__/
+/__pycache__/
+/.gitignore
