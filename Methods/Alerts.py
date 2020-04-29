@@ -3,6 +3,7 @@ import re
 from time import  sleep
 import gc, sys
 from Utils.excel import Excel
+from credentials import data_credentials
 
 class Alerts:
     
@@ -111,7 +112,8 @@ class Alerts:
         self.clickAlerts()#Click on alerts
         self.clickAllIncidents()#Click on all incidents
         excel = Excel()#Instance the file
-        if excel.createIncidentsReport(self.getApdexAndAvailabibility('Apr')) == True: #Comparate if the registers contains the april word
+        select_month = data_credentials['date_now_month']
+        if excel.createIncidentsReport(self.getApdexAndAvailabibility(select_month)) == True: #Comparate if the registers contains the april word
             self.verifyTitleandSaveLog('Incidents - Alerts by New Relic', 'Report created sucessfully') #Print sucessfull message when all process had successed
         else:
             self.verifyTitleandSaveLog('Incidents - Alerts by New Relic', "Something went wrong: {0}".format(sys.exc_info()[0]))
