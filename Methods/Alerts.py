@@ -1,8 +1,7 @@
 from Utils.utils import Utils
 import re
-import datetime
 from time import  sleep
-import gc
+import gc, sys
 from Utils.excel import Excel
 
 class Alerts:
@@ -57,7 +56,6 @@ class Alerts:
         return fixTimesInList(cleanListAnyElement()) #Return the list without errors
 
     def getApdexAndAvailabibility(self, select_month):
-        import re
         monitors = ['IB PROD', 'BM PROD', 'CTF PROD'] #Monitors Name
         finally_list = [] #Save data to send to the final proccess
         results = [] #Save table data of the differents monitors
@@ -113,8 +111,10 @@ class Alerts:
         self.clickAlerts()#Click on alerts
         self.clickAllIncidents()#Click on all incidents
         excel = Excel()#Instance the file
-        if excel.createIncidentsReport(self.getApdexAndAvailabibility('Apr')) == True:
-            self.verifyTitleandSaveLog('Incidents - Alerts by New Relic', 'Report created sucessfully')
+        if excel.createIncidentsReport(self.getApdexAndAvailabibility('Apr')) == True: #Comparate if the registers contains the april word
+            self.verifyTitleandSaveLog('Incidents - Alerts by New Relic', 'Report created sucessfully') #Print sucessfull message when all process had successed
+        else:
+            self.verifyTitleandSaveLog('Incidents - Alerts by New Relic', "Something went wrong: {0}".format(sys.exc_info()[0]))
 
             
 

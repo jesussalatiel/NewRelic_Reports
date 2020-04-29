@@ -1,19 +1,19 @@
 try:
     from Methods.Login import Login
     from Methods.Alerts import Alerts
+    from credentials import data_credentials
 
-    URL = 'https://newrelic.com/'
-    user = ''
-    password = ''
-
-    login = Login(URL, user, password)
+    '''Start Login'''
+    login = Login(data_credentials['url'], data_credentials['user'], data_credentials['password']) #Get credentials data of the dictionary
     login.startLogin()
 
+    '''Create Alert Report'''
     alerts = Alerts()
     alerts.viewAllIncidents()
-except :
-    print("Internet isn't working!")
+
+except:
+    import sys
+    print("Something went wrong: {0}".format(sys.exc_info()[0]))
 finally:
     login.logOut()
-    
 

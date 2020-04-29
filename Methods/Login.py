@@ -1,14 +1,12 @@
 from Utils.utils import Utils
-class Login:
 
-    user = None
-    password = None
-    
+class Login:
+        
     def __init__(self, URL, user, password):
         self.util = Utils()
-        self.util.setupBrowser(URL)
-        self.user = user
-        self.password = password
+        self.util.setupBrowser(URL) #Clean cookies and go to the web page
+        self.user = user #Initialize user variable
+        self.password = password #Initialize password variable
 
     def clickLogIn(self):
         self.util.clickElement('//*[@id="desk-login"]/span')
@@ -23,17 +21,18 @@ class Login:
         self.util.clickElement('//input[@id="login_submit"]')
     
     def logOut(self):
-        self.util.driver.quit()
+        self.util.setLog('Class: {0}, Message: {1}'.format(self.__class__.__name__, 'Session Finished'))
+        self.util.driver.close()
 
     def verifyTitleandSaveLog(self, title, message):
         self.util.setLog('Class: {0}, Message: {1}'.format(self.__class__.__name__, message))
 
     def startLogin(self):
-        self.clickLogIn()
-        self.setUser(self.user)
-        self.setPassword(self.password)
-        self.clickSignIn()
-        self.verifyTitleandSaveLog('All applications - New Relic', 'Session Started')
+        self.clickLogIn() #Click ok Login
+        self.setUser(self.user) #Write User on the texbox
+        self.setPassword(self.password)#Write Password on the texbox
+        self.clickSignIn()#CLick ok Signin
+        self.verifyTitleandSaveLog('All applications - New Relic', 'Session Started')#Verify the title
             
         
             
