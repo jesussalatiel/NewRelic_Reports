@@ -26,7 +26,10 @@ class Login:
 
     def verifyTitleandSaveLog(self, title, message):
         self.util.setLog('Class: {0}, Message: {1}'.format(self.__class__.__name__, message))
-
+    
+    def saveCookies(self):
+        pass
+    
     def startLogin(self):
         self.clickLogIn() #Click ok Login
         self.setUser(self.user) #Write User on the texbox

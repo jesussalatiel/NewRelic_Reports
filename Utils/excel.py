@@ -21,7 +21,7 @@ class Excel:
                 sheet.append(row) #Add the list to excel
             
             #Create the little table that contains the sum of elements by IB, CTF and BM 
-            sheet.merge_cells('I3:J3')
+            '''sheet.merge_cells('I3:J3')
             sheet.cell(row = 3, column = 9).value = 'IB'
             sheet["I4"] = 'Tipo de Alerta'
             sheet["J4"] = 'Incidencias'
@@ -56,7 +56,7 @@ class Excel:
             sheet["M7"] = 'Apdex Score < 0.7'
             sheet["N7"] = '=COUNTIF(E:E, "Apdex_BM")' #Formula to know how times you get the registers of BM
             sheet["N8"] = '=COUNTIF(E:E, "Availability_BM")' #Formula to know how times you get the registers of BM
-            sheet["M8"] = 'Ping Alerts'
+            sheet["M8"] = 'Ping Alerts'''
             
         except:
             import sys

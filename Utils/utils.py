@@ -4,11 +4,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-
+import pickle
 
 class Utils:
 
     driver = webdriver.Chrome('../chromedriver.exe') #Instance webdriver
+    wait_time_request = 100 #This method waiting for a presence of a element on the web page its predetermined time is 100 miliseconds
 
     def setupBrowser(self, URL):
         self.driver.get(URL) #Access to the website
@@ -26,8 +27,7 @@ class Utils:
         input = self.waitForElement(xpath).clear() #Clear input
 
     def waitForElement(self, xpath):
-        wait_time_request = 100 #This method waiting for a presence of a element on the web page its predetermined time is 100 miliseconds
-        element = WebDriverWait(self.driver, wait_time_request).until(
+        element = WebDriverWait(self.driver, self.wait_time_request).until(
             EC.presence_of_element_located((By.XPATH, xpath))
         )
         return element #Return web element
@@ -35,7 +35,7 @@ class Utils:
     def getAllItemsOfTable(self, xpath):
         elements_list = [] #Create list to save all the elements
         sleep(1)  # Wait 1 second
-        table = WebDriverWait(self.driver, 10).until(
+        table = WebDriverWait(self.driver, self.wait_time_request).until(
             EC.presence_of_all_elements_located((By.XPATH, xpath))
         )
 
@@ -45,6 +45,19 @@ class Utils:
 
         elements_list.pop(0)  # Clean titles from table
         return elements_list #Return list with separate elemets
+    
+    def getAllItemsOfTableByAttribute(self, xpath, name_attribute = 'id'):
+        attribute = [] #Create list to save all the elements
+        other_elements = []
+        sleep(1)  # Wait 1 second
+        table = WebDriverWait(self.driver, self.wait_time_request).until( #Wait for the presence of the element
+            EC.presence_of_all_elements_located((By.XPATH, xpath))
+        )
+        for value in table: # Save the elements in a list to send and manipulate
+            attribute.append(value.get_attribute(name_attribute))
+            other_elements.append(value.text)
+        
+        return attribute, other_elements #Return elements
 
     def getTitle(self):
         return self.driver.title #Return the title
@@ -55,7 +68,8 @@ class Utils:
         title_page = self.driver.title #Get the title
         '''Create Message'''
         report = "\n------------- Title Page: {0} --------------\n".format(title_page)
-        report += "Executor URL: {0},\nSession ID: {1},\nStep: {2}.".format(executor_url, session_id, text)
+        report += "Executor URL: {0},\nSession ID: {1},\nStep: {2}".format(executor_url, session_id, text)
         report += "\n_____________________________________________________________________"
         print(report)#Print Message
 
+    
